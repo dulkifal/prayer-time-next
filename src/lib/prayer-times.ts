@@ -40,7 +40,7 @@ export async function getPrayerData(lat: string, lon: string) {
       getLocationName(lat, lon),
     ]);
 
-    return { times, location };
+    return { data: times, location };
   } catch (error) {
     console.error('Failed to get prayer data:', error);
     return null;

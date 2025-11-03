@@ -97,10 +97,10 @@ export default function Home() {
                 <p className="text-lg text-gray-600 dark:text-gray-300">{prayerData.location}</p>
               )}
               <div className="flex justify-center gap-4 text-gray-500 dark:text-gray-400 mt-2">
-                <span>{prayerData.times.date.gregorian.date}</span>
+                <span>{prayerData.data.date.gregorian.date}</span>
                 <span>|</span>
                 <span>
-                  {prayerData.times.date.hijri.month.en} {prayerData.times.date.hijri.date.split('-')[2]}, {prayerData.times.date.hijri.year}
+                  {prayerData.data.date.hijri.month.en} {prayerData.data.date.hijri.date.split('-')[2]}, {prayerData.data.date.hijri.year}
                 </span>
               </div>
             </div>
@@ -109,13 +109,13 @@ export default function Home() {
               <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <p className="text-lg font-semibold text-gray-700 dark:text-gray-200">Sunrise</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {prayerData.times.times.Sunrise}
+                  {prayerData.data.times.Sunrise}
                 </p>
               </div>
               <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <p className="text-lg font-semibold text-gray-700 dark:text-gray-200">Qibla</p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {prayerData.times.qibla.direction.degrees.toFixed(2)}°
+                  {prayerData.data.qibla.direction.degrees.toFixed(2)}°
                 </p>
               </div>
             </div>
@@ -123,7 +123,7 @@ export default function Home() {
             <div className="mt-6">
               <h2 className="text-2xl font-semibold text-center mb-4 text-gray-800 dark:text-white">Prayer Times</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                {Object.entries(prayerData.times.times)
+                {Object.entries(prayerData.data.times)
                   .filter(([key]) => !['Sunrise', 'Sunset', 'Imsak', 'Midnight', 'Firstthird', 'Lastthird'].includes(key))
                   .map(([key, value]) => (
                     <div key={key} className="p-4 bg-blue-100 dark:bg-blue-900 rounded-lg text-center">
