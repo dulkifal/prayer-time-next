@@ -44,44 +44,11 @@ interface PrayerData {
   qibla: Qibla;
 }
 
-interface CompassProps {
-  qiblaDirection: number;
-  heading: number;
-}
-
-const Compass: React.FC<CompassProps> = ({ qiblaDirection, heading }) => {
-  const compassRotation = -heading;
-  const qiblaRotation = qiblaDirection - heading;
-
-  return (
-    <div className="relative w-48 h-48 mx-auto">
-      <svg id="compass" width="192" height="192" xmlns="http://www.w3.org/2000/svg" style={{ transform: `rotate(${compassRotation}deg)` }}>
-        <circle cx="96" cy="96" r="90" stroke="black" strokeWidth="2" fill="white" />
-        <text x="91" y="25" fontFamily="Arial" fontSize="20" fill="black">N</text>
-        <text x="165" y="101" fontFamily="Arial" fontSize="20" fill="black">E</text>
-        <text x="91" y="175" fontFamily="Arial" fontSize="20" fill="black">S</text>
-        <text x="15" y="101" fontFamily="Arial" fontSize="20" fill="black">W</text>
-        <line x1="96" y1="30" x2="96" y2="162" stroke="black" strokeWidth="1" />
-        <line x1="30" y1="96" x2="162" y2="96" stroke="black" strokeWidth="1" />
-      </svg>
-      <div
-        className="absolute top-0 left-0 w-full h-full flex items-center justify-center"
-        style={{ transform: `rotate(${qiblaRotation}deg)` }}
-      >
-        <svg width="24" height="120" viewBox="0 0 24 120">
-          <polygon points="12,0 24,120 0,120" fill="rgba(255, 0, 0, 0.7)" />
-        </svg>
-      </div>
-    </div>
-  );
-};
-
 export default function Home() {
   const [prayerData, setPrayerData] = useState<{ data: PrayerData; location: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [heading, setHeading] = useState(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -91,31 +58,13 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const handleOrientation = (event: DeviceOrientationEvent) => {
-      if (event.alpha) {
-        setHeading(event.alpha);
-      }
-    };
-
-    if (window.DeviceOrientationEvent) {
-      window.addEventListener('deviceorientation', handleOrientation);
-    }
-
-    return () => {
-      if (window.DeviceOrientationEvent) {
-        window.removeEventListener('deviceorientation', handleOrientation);
-      }
-    };
-  }, []);
-
-  useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const { latitude, longitude } = position.coords;
           try {
             const data = await getPrayerData(latitude.toString(), longitude.toString());
-            setPrayerData(data as { data: PrayerData; location: string });
+            setPrayerData(data);
           } catch (err) {
             setError('Could not fetch prayer data.');
           }
@@ -165,7 +114,9 @@ export default function Home() {
               </div>
               <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <p className="text-lg font-semibold text-gray-700 dark:text-gray-200">Qibla</p>
-                <Compass qiblaDirection={prayerData.data.qibla.direction.degrees} heading={heading} />
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {prayerData.data.qibla.direction.degrees.toFixed(2)}°
+                </p>
               </div>
             </div>
 
@@ -188,4 +139,3 @@ export default function Home() {
     </div>
   );
 }
-
